@@ -1,0 +1,3 @@
+-D layout=1.2.1
+# @install: lix --silent download "haxelib:/layout#1.2.1" into layout/1.2.1/haxelib
+-cp ${HAXE_LIBCACHE}/layout/1.2.1/haxelib/

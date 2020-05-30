@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="Thinamp" package="com.osakared.thinamp" version="1.0.0" company="Osaka Red LLC" />
+	<app main="MainWindow" path="Export" file="Thinamp" />
+	
+	<source path="src" />
+	
+	<haxelib name="lime" />
+    <haxelib name="openfl" />
+	<haxelib name="format" />
+	
+	<assets path="assets" rename="assets" />
+
+    <window fullscreen="false" resizable="false" borderless="true" width="275" height="116" hidden="false" />
+
+</project>

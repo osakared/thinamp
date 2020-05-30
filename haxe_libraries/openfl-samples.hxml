@@ -1,0 +1,3 @@
+-D openfl-samples=8.7.0
+# @install: lix --silent download "haxelib:/openfl-samples#8.7.0" into openfl-samples/8.7.0/haxelib
+-cp ${HAXE_LIBCACHE}/openfl-samples/8.7.0/haxelib/

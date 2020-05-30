@@ -1,0 +1,27 @@
+-main ApplicationMain 
+-D lime=7.6.3
+-cp /Users/pinkboi/haxe/haxe_libraries/lime/7.6.3/haxelib/src
+--macro lime._internal.macros.DefineMacro.run()
+-cp .
+-D lime-openal
+-D ANDROID_SETUP=true
+-D ANDROID_NDK_ROOT=/Users/pinkboi/Library/Android/sdk/ndk/21.0.6113669
+-D native
+-D lime-curl
+-D MAC_USE_CURRENT_SDK=1
+-D lime-harfbuzz
+-D tools=7.6.3
+-D lime-cairo
+-D lime-opengl
+-D no-compilation
+-D macos
+-D lime-native
+-D lime-vorbis
+-D MACOSX_DEPLOYMENT_TARGET=10.9
+-D lime-cffi
+-D mac
+-D desktop
+-cpp Export/macos/obj/
+-cp Export/macos/haxe
+--macro keep("RunTests")
+-debug
