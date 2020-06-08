@@ -9,9 +9,9 @@
 	<haxelib name="lime" />
     <haxelib name="openfl" />
 	<haxelib name="format" />
-	
-	<assets path="assets" rename="assets" />
 
+	<haxeflag name="-resource skins/winamp.wsz" />
+	
     <window fullscreen="false" resizable="false" borderless="true" width="275" height="116" hidden="false" />
 
 </project>

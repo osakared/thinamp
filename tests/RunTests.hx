@@ -25,7 +25,7 @@ class RunTests extends Application
         // output.close();
         // var image2 = BMP.decode(output.getBytes());
 
-        var input = File.read('/Users/pinkboi/Downloads/neoclassic/MAIN.BMP');
+        var input = File.read('~/Downloads/Winamp/cbuttons.bmp');
         var image3 = BMP.decode(input.readAll());
         var output = File.write('main.png');
         output.write(image3.encode());

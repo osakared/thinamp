@@ -5,6 +5,7 @@ import openfl.geom.Rectangle;
 
 class TileButton extends Tile
 {
+    var state:Int;
     var upID:Int;
     var downID:Int;
     public var hitArea(default, null):Rectangle;
@@ -20,7 +21,7 @@ class TileButton extends Tile
         x = hitArea.x;
         y = hitArea.y;
         
-        id = upID;
+        id = state = upID;
     }
 
     public function press():Void
@@ -30,6 +31,16 @@ class TileButton extends Tile
 
     public function release():Void
     {
-        id = upID;
+        id = state;
+    }
+
+    public function setStateDown():Void
+    {
+        state = downID;
+    }
+
+    public function setStateUp():Void
+    {
+        state = upID;
     }
 }

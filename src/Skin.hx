@@ -1,6 +1,8 @@
 package;
 
+import haxe.io.BytesInput;
 import haxe.io.Input;
+import haxe.Resource;
 import haxe.zip.Reader;
 import openfl.display.BitmapData;
 #if (!js || hxnodejs)
@@ -39,13 +41,18 @@ class Skin
         return skin;
     }
 
+    public static function fromResource(assetName:String):Skin
+    {
+        var bytes = Resource.getBytes(assetName);
+        var input = new BytesInput(bytes);
+        return fromInput(input);
+    }
+
+    #if (!js || hxnodejs)
     public static function fromFilename(filename:String):Skin
     {
-        #if (!js || hxnodejs)
         var input = File.read(filename);
         return fromInput(input);
-        #else
-        return null; // let's get something from assets in this case
-        #end
     }
+    #end
 }
