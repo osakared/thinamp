@@ -16,6 +16,8 @@ class MainWindow extends AmpWindow
     private var playButton:TileButton = null;
     private var pauseButton:TileButton = null;
 
+    private var titleBar:CollapsibleTitleBar = null;
+
     private var currentButton:TileButton = null;
 
     public function new()
@@ -49,12 +51,35 @@ class MainWindow extends AmpWindow
         // eqWindow.initSkin(skin);
     }
 
-    private static function addButton(tileset:Tileset, tilemap:Tilemap, buttons:Array<TileButton>, placement:Rectangle, up:Rectangle, down:Rectangle):TileButton
+    private static function addButton(tileset:Tileset, tilemap:Tilemap, buttons:Array<TileButton>, placement:Rectangle,
+        up:Rectangle, down:Rectangle):TileButton
     {
         var upID = tileset.addRect(up);
         var downID = tileset.addRect(down);
 
         var button = new TileButton(upID, downID, placement);
+        tilemap.addTile(button);
+        buttons.push(button);
+        return button;
+    }
+
+    private static function addToggleButton(tileset:Tileset, tilemap:Tilemap, buttons:Array<TileButton>, placement:Rectangle,
+        up:Rectangle, down:Rectangle, toggleUp:Rectangle, toggleDown:Rectangle):TileButton
+    {
+        var upID = tileset.addRect(up);
+        var downID = tileset.addRect(down);
+        var toggleUpID = tileset.addRect(toggleUp);
+        var toggleDownID = tileset.addRect(toggleDown);
+
+        var button = new TileButton(upID, downID, placement, toggleUpID, toggleDownID);
+
+        // Temporary - for testing. Simple toggle until we can have this just reflecting the state from the server
+        var isToggled = false;
+        button.onPress = () -> {
+            isToggled = !isToggled;
+            button.setToggled(isToggled);
+        }
+
         tilemap.addTile(button);
         buttons.push(button);
         return button;
@@ -67,9 +92,10 @@ class MainWindow extends AmpWindow
         addChild(bitmap);
         bitmap.x = bitmap.y = 0;
 
+        var newButtons = new Array<TileButton>();
+
         var transportTileset = new Tileset(skin.cButtonsBitmap);
         var transportTilemap = new Tilemap(Std.int(stage.width), Std.int(stage.height), transportTileset, false);
-        var newButtons = new Array<TileButton>();
 
         var startRect = new Rectangle(16, 88, 23, 18);
         // back button
@@ -86,6 +112,12 @@ class MainWindow extends AmpWindow
             new Rectangle(startRect.x + startRect.width * 2, startRect.y, startRect.width, startRect.height),
             new Rectangle(startRect.width * 2, 0, startRect.width, startRect.height),
             new Rectangle(startRect.width * 2, startRect.height, startRect.width, startRect.height));
+        // This stuff is for testing; when we hook this up with musicpd, it will only be toggled by state received from the server
+        var isToggled = false;
+        pauseButton.onPress = () -> {
+            isToggled = !isToggled;
+            pauseButton.setToggled(isToggled);
+        }
         // stop button
         addButton(transportTileset, transportTilemap, newButtons,
             new Rectangle(startRect.x + startRect.width * 3, startRect.y, startRect.width, startRect.height),
@@ -104,7 +136,76 @@ class MainWindow extends AmpWindow
 
         addChild(transportTilemap);
 
+        var shufRepTileset = new Tileset(skin.shufRepBitmap);
+        var shufRepTilemap = new Tilemap(Std.int(stage.width), Std.int(stage.height), shufRepTileset, false);
+
+        startRect = new Rectangle(0, 0, 28, 15);
+        // repeat toggle button
+        addToggleButton(shufRepTileset, shufRepTilemap, newButtons, new Rectangle(211, 89, startRect.width, startRect.height),
+            startRect, new Rectangle(startRect.x, startRect.height, startRect.width, startRect.height),
+            new Rectangle(startRect.x, startRect.height * 2, startRect.width, startRect.height),
+            new Rectangle(startRect.x, startRect.height * 3, startRect.width, startRect.height));
+        // shuffle toggle button
+        startRect = new Rectangle(28, 0, 47, 15);
+        addToggleButton(shufRepTileset, shufRepTilemap, newButtons, new Rectangle(164, 89, startRect.width, startRect.height),
+            startRect, new Rectangle(startRect.x, startRect.height, startRect.width, startRect.height),
+            new Rectangle(startRect.x, startRect.height * 2, startRect.width, startRect.height),
+            new Rectangle(startRect.x, startRect.height * 3, startRect.width, startRect.height));
+        // equalizer toggle button
+        startRect = new Rectangle(0, 61, 23, 12);
+        addToggleButton(shufRepTileset, shufRepTilemap, newButtons, new Rectangle(219, 58, startRect.width, startRect.height),
+            startRect, new Rectangle(startRect.width * 2, startRect.y, startRect.width, startRect.height),
+            new Rectangle(startRect.x, startRect.y + startRect.height, startRect.width, startRect.height),
+            new Rectangle(startRect.width * 2, startRect.y + startRect.height, startRect.width, startRect.height));
+        // playlist toggle button
+        startRect = new Rectangle(23, 61, 23, 12);
+        addToggleButton(shufRepTileset, shufRepTilemap, newButtons, new Rectangle(242, 58, startRect.width, startRect.height),
+            startRect, new Rectangle(startRect.x + startRect.width * 2, startRect.y, startRect.width, startRect.height),
+            new Rectangle(startRect.x, startRect.y + startRect.height, startRect.width, startRect.height),
+            new Rectangle(startRect.x + startRect.width * 2, startRect.y + startRect.height, startRect.width, startRect.height));
         
+        addChild(shufRepTilemap);
+
+        var titlebarTileset = new Tileset(skin.titlebarBitmap);
+        var titlebarTilemap = new Tilemap(Std.int(stage.width), Std.int(stage.height), titlebarTileset, false);
+
+        startRect = new Rectangle(27, 0, 275, 14);
+        var focusedID = titlebarTileset.addRect(startRect);
+        startRect.y = startRect.height + 2;
+        var blurredID = titlebarTileset.addRect(startRect);
+        startRect.y += startRect.height + 1;
+        var focusedAndCollapsedID = titlebarTileset.addRect(startRect);
+        startRect.y += startRect.height + 1;
+        var blurredAndCollapsedID = titlebarTileset.addRect(startRect);
+
+        titleBar = new CollapsibleTitleBar(focusedID, focusedAndCollapsedID, blurredID, blurredAndCollapsedID);
+        titlebarTilemap.addTile(titleBar);
+
+        // menu button
+        startRect = new Rectangle(0, 0, 9, 9);
+        addButton(titlebarTileset, titlebarTilemap, newButtons, new Rectangle(6, 3, startRect.width, startRect.height),
+            startRect, new Rectangle(startRect.x, startRect.y + startRect.height, startRect.width, startRect.height));
+        // minimize button
+        startRect.x += startRect.width;
+        addButton(titlebarTileset, titlebarTilemap, newButtons, new Rectangle(244, 3, startRect.width, startRect.height),
+            startRect, new Rectangle(startRect.x, startRect.y + startRect.height, startRect.width, startRect.height));
+        // close button
+        startRect.x += startRect.width;
+        var closeButton = addButton(titlebarTileset, titlebarTilemap, newButtons, new Rectangle(264, 3, startRect.width, startRect.height),
+            startRect, new Rectangle(startRect.x, startRect.y + startRect.height, startRect.width, startRect.height));
+        closeButton.onPress = () -> {
+            openfl.system.System.exit(0);
+        }
+        // collapse button
+        startRect = new Rectangle(0, 18, 9, 9);
+        addButton(titlebarTileset, titlebarTilemap, newButtons, new Rectangle(254, 3, startRect.width, startRect.height),
+            startRect, new Rectangle(startRect.x + startRect.width, startRect.y, startRect.width, startRect.height));
+        // expand button
+        // startRect = new Rectangle(0, 27, 9, 9);
+        // addButton(titlebarTileset, titlebarTilemap, newButtons, new Rectangle(264, 3, startRect.width, startRect.height),
+        //     startRect, new Rectangle(startRect.x + startRect.width, startRect.y, startRect.width, startRect.height));
+
+        addChild(titlebarTilemap);
 
         buttons = newButtons;
     }

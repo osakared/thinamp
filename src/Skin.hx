@@ -14,6 +14,8 @@ class Skin
     public var cButtonsBitmap(default, null):BitmapData;
     public var eqBitmap(default, null):BitmapData;
     public var mainBitmap(default, null):BitmapData;
+    public var shufRepBitmap(default, null):BitmapData;
+    public var titlebarBitmap(default, null):BitmapData;
 
     private function new()
     {
@@ -34,8 +36,12 @@ class Skin
                     skin.eqBitmap = BitmapData.fromImage(BMP.decode(data));
                 case 'main.bmp':
                     skin.mainBitmap = BitmapData.fromImage(BMP.decode(data));
+                case 'shufrep.bmp':
+                    skin.shufRepBitmap = BitmapData.fromImage(BMP.decode(data));
+                case 'titlebar.bmp':
+                    skin.titlebarBitmap = BitmapData.fromImage(BMP.decode(data));
                 default:
-                    trace('*');
+                    trace(entry.fileName);
             }
         }
         return skin;
