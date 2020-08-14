@@ -9,6 +9,8 @@
 	<haxelib name="lime" />
     <haxelib name="openfl" />
 	<haxelib name="format" />
+	<haxelib name="musicpd" />
+	<haxelib name="tink_core" />
 
 	<haxeflag name="-resource skins/winamp.wsz" />
 	

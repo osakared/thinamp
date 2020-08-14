@@ -1,6 +1,7 @@
 package;
 
 import flash.geom.Rectangle;
+import mpd.MusicPD;
 import openfl.display.Bitmap;
 import openfl.display.Tilemap;
 import openfl.display.Tileset;
@@ -19,6 +20,8 @@ class MainWindow extends AmpWindow
     private var titleBar:CollapsibleTitleBar = null;
 
     private var currentButton:TileButton = null;
+
+    private var musicPD:MusicPD = null;
 
     public function new()
     {
@@ -41,6 +44,15 @@ class MainWindow extends AmpWindow
             if (currentButton != null) {
                 currentButton.release();
                 currentButton = null;
+            }
+        });
+
+        MusicPD.connect('localhost').handle((outcome) -> {
+            switch outcome {
+                case Success(_musicPD):
+                    musicPD = _musicPD;
+                case Failure(error):
+                    trace(error);
             }
         });
 
@@ -107,6 +119,17 @@ class MainWindow extends AmpWindow
             new Rectangle(startRect.x + startRect.width, startRect.y, startRect.width, startRect.height),
             new Rectangle(startRect.width, 0, startRect.width, startRect.height),
             new Rectangle(startRect.width, startRect.height, startRect.width, startRect.height));
+        playButton.onPress = () -> {
+            if (musicPD == null) return;
+            musicPD.play(0).handle((outcome) -> {
+                switch outcome {
+                    case Success(response):
+                        trace(response);
+                    case Failure(error):
+                        trace(error);
+                }
+            });
+        }
         // pause button
         pauseButton = addButton(transportTileset, transportTilemap, newButtons,
             new Rectangle(startRect.x + startRect.width * 2, startRect.y, startRect.width, startRect.height),
@@ -119,10 +142,21 @@ class MainWindow extends AmpWindow
             pauseButton.setToggled(isToggled);
         }
         // stop button
-        addButton(transportTileset, transportTilemap, newButtons,
+        var stopButton = addButton(transportTileset, transportTilemap, newButtons,
             new Rectangle(startRect.x + startRect.width * 3, startRect.y, startRect.width, startRect.height),
             new Rectangle(startRect.width * 3, 0, startRect.width, startRect.height),
             new Rectangle(startRect.width * 3, startRect.height, startRect.width, startRect.height));
+        stopButton.onPress = () -> {
+            if (musicPD == null) return;
+            musicPD.stop().handle((outcome) -> {
+                switch outcome {
+                    case Success(response):
+                        trace(response);
+                    case Failure(error):
+                        trace(error);
+                }
+            });
+        }
         // forward button
         var forwardRect = new Rectangle(startRect.x + startRect.width * 4, startRect.y, 22, startRect.height);
         addButton(transportTileset, transportTilemap, newButtons, forwardRect,
