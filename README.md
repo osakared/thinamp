@@ -10,9 +10,12 @@ Put a winamp classic skin in `skins/winamp.wsz` so that this can build. Many won
 lix run openfl test PLATFORM
 ```
 
-## TODO
+## Contributing
 
-* Get bmp reader supporting all common formats, possibly spin-off as separate lib
-* Implement events on the buttons so I can start firing off pause, play, etc.
-* Use my haxe-mpd lib to start controlling mpd!
-* Support Winamp 3-style skins too
+See [CONTRIBUTING](CONTRIBUTING.md)
+
+## License
+
+MIT License. See [LICENSE](LICENSE)
+
+Included font is made from <a href="http://www.onlinewebfonts.com">oNline Web Fonts</a> licensed by CC BY 3.0

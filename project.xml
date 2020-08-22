@@ -13,7 +13,9 @@
 	<haxelib name="tink_core" />
 
 	<haxeflag name="-resource skins/winamp.wsz" />
+
+	<assets path="fonts" />
 	
-    <window fullscreen="false" resizable="false" borderless="true" width="275" height="116" hidden="false" />
+    <window fullscreen="false" resizable="false" borderless="true" width="275" height="116" hidden="false" fps="6" />
 
 </project>

@@ -104,6 +104,11 @@ class MainWindow extends AmpWindow
         addChild(bitmap);
         bitmap.x = bitmap.y = 0;
 
+        var text = new AmpText(31, 158, 10, skin.normalTextColor, true); // height should be 5 or 12 but we're fudging, width should be 154 but nah
+        text.x = 108; // should be 110 but we're fudging
+        text.y = 23; // should be 24 but can't get it to line up right
+        addChild(text);
+
         var newButtons = new Array<TileButton>();
 
         var transportTileset = new Tileset(skin.cButtonsBitmap);
@@ -123,8 +128,20 @@ class MainWindow extends AmpWindow
             if (musicPD == null) return;
             musicPD.play(0).handle((outcome) -> {
                 switch outcome {
-                    case Success(response):
-                        trace(response);
+                    case Success(_):
+                        musicPD.getCurrentSong().handle((outcome) -> {
+                            switch outcome {
+                                case Success(songInfo):
+                                    var trackText = '';
+                                    if (songInfo.track != null) trackText += '${songInfo.track}. ';
+                                    trackText += '${songInfo.artist}';
+                                    if (songInfo.artist != null && songInfo.title != null) trackText += ' - ';
+                                    trackText += '${songInfo.title}';
+                                    text.setText(trackText);
+                                case Failure(error):
+                                    trace(error);
+                            }
+                        });
                     case Failure(error):
                         trace(error);
                 }
