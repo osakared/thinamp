@@ -5,7 +5,7 @@ import haxe.io.Input;
 import haxe.Resource;
 import haxe.zip.Reader;
 import openfl.display.BitmapData;
-#if (!js || hxnodejs)
+#if sys
 import sys.io.File;
 #end
 
@@ -90,7 +90,7 @@ class Skin
         return fromInput(input);
     }
 
-    #if (!js || hxnodejs)
+    #if sys
     public static function fromFilename(filename:String):Skin
     {
         var input = File.read(filename);

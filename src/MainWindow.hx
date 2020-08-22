@@ -1,7 +1,9 @@
 package;
 
 import flash.geom.Rectangle;
+#if sys
 import mpd.MusicPD;
+#end
 import openfl.display.Bitmap;
 import openfl.display.Tilemap;
 import openfl.display.Tileset;
@@ -21,7 +23,9 @@ class MainWindow extends AmpWindow
 
     private var currentButton:TileButton = null;
 
+    #if sys
     private var musicPD:MusicPD = null;
+    #end
 
     public function new()
     {
@@ -47,6 +51,7 @@ class MainWindow extends AmpWindow
             }
         });
 
+        #if sys
         MusicPD.connect('localhost').handle((outcome) -> {
             switch outcome {
                 case Success(_musicPD):
@@ -55,6 +60,7 @@ class MainWindow extends AmpWindow
                     trace(error);
             }
         });
+        #end
 
         // FIXME adding windows seems to create a jankiness, probably multiple event issue
         // var eqContainingWindow = stage.application.createWindow({borderless: true, resizable: false, width: stage.window.width, height: stage.window.height});
@@ -107,6 +113,7 @@ class MainWindow extends AmpWindow
         var text = new AmpText(31, 158, 10, skin.normalTextColor, true); // height should be 5 or 12 but we're fudging, width should be 154 but nah
         text.x = 108; // should be 110 but we're fudging
         text.y = 23; // should be 24 but can't get it to line up right
+        text.setText('テストtest');
         addChild(text);
 
         var newButtons = new Array<TileButton>();
@@ -124,6 +131,7 @@ class MainWindow extends AmpWindow
             new Rectangle(startRect.x + startRect.width, startRect.y, startRect.width, startRect.height),
             new Rectangle(startRect.width, 0, startRect.width, startRect.height),
             new Rectangle(startRect.width, startRect.height, startRect.width, startRect.height));
+        #if sys
         playButton.onPress = () -> {
             if (musicPD == null) return;
             musicPD.play(0).handle((outcome) -> {
@@ -147,6 +155,7 @@ class MainWindow extends AmpWindow
                 }
             });
         }
+        #end
         // pause button
         pauseButton = addButton(transportTileset, transportTilemap, newButtons,
             new Rectangle(startRect.x + startRect.width * 2, startRect.y, startRect.width, startRect.height),
@@ -163,6 +172,7 @@ class MainWindow extends AmpWindow
             new Rectangle(startRect.x + startRect.width * 3, startRect.y, startRect.width, startRect.height),
             new Rectangle(startRect.width * 3, 0, startRect.width, startRect.height),
             new Rectangle(startRect.width * 3, startRect.height, startRect.width, startRect.height));
+        #if sys
         stopButton.onPress = () -> {
             if (musicPD == null) return;
             musicPD.stop().handle((outcome) -> {
@@ -174,6 +184,7 @@ class MainWindow extends AmpWindow
                 }
             });
         }
+        #end
         // forward button
         var forwardRect = new Rectangle(startRect.x + startRect.width * 4, startRect.y, 22, startRect.height);
         addButton(transportTileset, transportTilemap, newButtons, forwardRect,
