@@ -1,5 +1,6 @@
--D lime=7.6.3
-# @install: lix --silent download "haxelib:/lime#7.6.3" into lime/7.6.3/haxelib
-# @run: haxelib run-dir lime ${HAXE_LIBCACHE}/lime/7.6.3/haxelib
--cp ${HAXE_LIBCACHE}/lime/7.6.3/haxelib/src
+# @install: lix --silent download "haxelib:/lime#8.1.2" into lime/8.1.2/haxelib
+# @run: haxelib run-dir lime "${HAXE_LIBCACHE}/lime/8.1.2/haxelib"
+-cp ${HAXE_LIBCACHE}/lime/8.1.2/haxelib/src
+-D lime=8.1.2
 --macro lime._internal.macros.DefineMacro.run()
+-lib ndll:${HAXE_LIBCACHE}/lime/8.1.2/haxelib/ndll/
