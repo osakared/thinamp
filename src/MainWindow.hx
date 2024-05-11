@@ -5,6 +5,7 @@ import flash.geom.Rectangle;
 import mpd.MusicPD;
 #end
 import openfl.display.Bitmap;
+import openfl.display.NativeWindow;
 import openfl.display.Tilemap;
 import openfl.display.Tileset;
 // import openfl.display.Window;
@@ -249,8 +250,13 @@ class MainWindow extends AmpWindow
             startRect, new Rectangle(startRect.x, startRect.y + startRect.height, startRect.width, startRect.height));
         // minimize button
         startRect.x += startRect.width;
-        addButton(titlebarTileset, titlebarTilemap, newButtons, new Rectangle(244, 3, startRect.width, startRect.height),
+        var minimizeButton = addButton(titlebarTileset, titlebarTilemap, newButtons, new Rectangle(244, 3, startRect.width, startRect.height),
             startRect, new Rectangle(startRect.x, startRect.y + startRect.height, startRect.width, startRect.height));
+        if (NativeWindow.isSupported) {
+            minimizeButton.onPress = () -> {
+                stage.nativeWindow.minimize();
+            }
+        }
         // close button
         startRect.x += startRect.width;
         var closeButton = addButton(titlebarTileset, titlebarTilemap, newButtons, new Rectangle(264, 3, startRect.width, startRect.height),
