@@ -17,13 +17,13 @@ class Skin
     public var shufRepBitmap(default, null):BitmapData;
     public var titlebarBitmap(default, null):BitmapData;
 
-    public var normalTextColor:Int = 0x222222;
-    public var currentTextColor:Int = 0x000000;
-    public var normalBGColor:Int = 0xffffff;
-    public var selectedBGColor:Int = 0xffffff;
-    public var fontName:String = 'arial';
-    public var miniBrowserBGColor:Int = 0x000000;
-    public var miniBrowserFGColor:Int = 0xffffff;
+    public var normalTextColor:Int = 0xa6c1df;
+    public var currentTextColor:Int = 0xeeeeee;
+    public var normalBGColor:Int = 0x000000;
+    public var selectedBGColor:Int = 0x666666;
+    public var fontName:String = 'helvetica';
+    public var miniBrowserBGColor:Int = 0xeeeeee;
+    public var miniBrowserFGColor:Int = 0x666666;
 
     private function new()
     {
@@ -34,6 +34,7 @@ class Skin
         var pairMatcher = ~/^(\w+)\s*=\s*#(\w+)\s*$/;
         for (line in text.split('\n')) {
             if (pairMatcher.match(line)) {
+                trace('${line}\n\tcolor: 0x${pairMatcher.matched(2)}\n\t${pairMatcher.matched(1).toLowerCase()}');
                 var val:Int = Std.parseInt('0x${pairMatcher.matched(2)}');
                 switch pairMatcher.matched(1).toLowerCase() {
                     case 'normal':
@@ -51,6 +52,9 @@ class Skin
                     case 'mbfg':
                         miniBrowserFGColor = val;
                 }
+            }
+            else {
+                trace('Line didn\'t match: ${line}');
             }
         }
     }

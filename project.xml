@@ -11,6 +11,7 @@
 	<haxelib name="format" />
 	<haxelib name="musicpd" />
 	<haxelib name="tink_core" />
+	<haxelib name="coconut.data" />
 
 	<haxeflag name="-resource skins/winamp.wsz" />
 

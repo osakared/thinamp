@@ -8,7 +8,7 @@ import lime.graphics.Image;
 import lime.math.Rectangle;
 
 class BMP
-{   
+{
     public static function decode(bytes:Bytes):Image
     {
         var input = new BytesInput(bytes);

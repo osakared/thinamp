@@ -1,6 +1,5 @@
 package;
 
-import flash.geom.Rectangle;
 #if sys
 import mpd.MusicPD;
 #end
@@ -23,6 +22,8 @@ class MainWindow extends AmpWindow
     private var titleBar:CollapsibleTitleBar = null;
 
     private var currentButton:TileButton = null;
+
+    private var player = new state.Player();
 
     #if sys
     private var musicPD:MusicPD = null;
@@ -53,10 +54,23 @@ class MainWindow extends AmpWindow
         });
 
         #if sys
-        MusicPD.connect('localhost').handle((outcome) -> {
+        MusicPD.connect('127.0.0.1').handle((outcome) -> {
             switch outcome {
                 case Success(_musicPD):
                     musicPD = _musicPD;
+                    // musicPD.searchAndAdd("(AlbumArtist == \\\"And One\\\")");
+                case Failure(error):
+                    trace(error);
+            }
+        });
+        // Separate connection for listening to changes
+        MusicPD.connect('127.0.0.1').handle((outcome) -> {
+            switch outcome {
+                case Success(_musicPD):
+                    var adapter = new state.MPDAdapter(player, _musicPD);
+                    sys.thread.Thread.create(() -> {
+                        adapter.callback();
+                    });
                 case Failure(error):
                     trace(error);
             }
@@ -162,12 +176,22 @@ class MainWindow extends AmpWindow
             new Rectangle(startRect.x + startRect.width * 2, startRect.y, startRect.width, startRect.height),
             new Rectangle(startRect.width * 2, 0, startRect.width, startRect.height),
             new Rectangle(startRect.width * 2, startRect.height, startRect.width, startRect.height));
-        // This stuff is for testing; when we hook this up with musicpd, it will only be toggled by state received from the server
-        var isToggled = false;
         pauseButton.onPress = () -> {
-            isToggled = !isToggled;
-            pauseButton.setToggled(isToggled);
+            if (musicPD != null) musicPD.pause();
         }
+        player.observables.state.bind((state) -> {
+            switch state {
+                case Playing:
+                    playButton.setToggled(true);
+                    pauseButton.setToggled(false);
+                case Paused:
+                    playButton.setToggled(false);
+                    pauseButton.setToggled(true);
+                case Stopped:
+                    playButton.setToggled(false);
+                    pauseButton.setToggled(false);
+            }
+        });
         // stop button
         var stopButton = addButton(transportTileset, transportTilemap, newButtons,
             new Rectangle(startRect.x + startRect.width * 3, startRect.y, startRect.width, startRect.height),
@@ -175,15 +199,7 @@ class MainWindow extends AmpWindow
             new Rectangle(startRect.width * 3, startRect.height, startRect.width, startRect.height));
         #if sys
         stopButton.onPress = () -> {
-            if (musicPD == null) return;
-            musicPD.stop().handle((outcome) -> {
-                switch outcome {
-                    case Success(response):
-                        trace(response);
-                    case Failure(error):
-                        trace(error);
-                }
-            });
+            if (musicPD != null) musicPD.stop();
         }
         #end
         // forward button
@@ -254,7 +270,7 @@ class MainWindow extends AmpWindow
             startRect, new Rectangle(startRect.x, startRect.y + startRect.height, startRect.width, startRect.height));
         if (NativeWindow.isSupported) {
             minimizeButton.onPress = () -> {
-                stage.nativeWindow.minimize();
+                stage.window.minimized = true;
             }
         }
         // close button
